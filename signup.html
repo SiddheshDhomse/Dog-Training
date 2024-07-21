@@ -169,7 +169,10 @@
                         last_login: Date.now()
                     };
 
-                    set(database_ref, user_data);
+                    set(database_ref, user_data).then(() => {
+                        // Redirect to home.html
+                        window.location.href = 'home.html';
+                    });
                 })
                 .catch((error) => {
                     const error_code = error.code;
@@ -197,10 +200,6 @@
             register(); // Call the register function
         });
 
-        function login(){
-            const email = document.getElementById('email').value;
-            const name = document.getElementById('name').value;
-        }
     </script>
 </body>
 </html>
