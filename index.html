@@ -12,12 +12,12 @@
         // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDohxxobIvvkI1P_f0BDrrwYtPfs8CbvWo",
-    authDomain: "login-and-signup-34870.firebaseapp.com",
-    projectId: "login-and-signup-34870",
-    storageBucket: "login-and-signup-34870.appspot.com",
-    messagingSenderId: "464772777824",
-    appId: "1:464772777824:web:46a867bb9cbd14da570005",
-    measurementId: "G-2J14M7JZE0"
+            authDomain: "login-and-signup-34870.firebaseapp.com",
+            projectId: "login-and-signup-34870",
+            storageBucket: "login-and-signup-34870.appspot.com",
+            messagingSenderId: "464772777824",
+            appId: "1:464772777824:web:46a867bb9cbd14da570005",
+            measurementId: "G-2J14M7JZE0"
         };
         
         // Initialize Firebase
@@ -33,8 +33,8 @@
                     // Signed in
                     const user = userCredential.user;
                     alert('Sign in successful');
-                    // Redirect to index.html
-                    window.location.href = 'index.html';
+                    // Redirect to home.html
+                    window.location.href = 'home.html';
                 })
                 .catch((error) => {
                     const errorCode = error.code;
