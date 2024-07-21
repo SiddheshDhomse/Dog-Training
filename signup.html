@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111827;
+            color: #1f2937;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            background-color: #1f2937;
+            border-color: #374151;
+        }
+        .container h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #ffffff;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            background-color: #f9fafb;
+            color: #1f2937;
+            font-size: 14px;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+        .btn {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #2124ce;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #1a1db2;
+        }
+        .text-sm {
+            font-size: 14px;
+            color: #6b7280;
+            text-align: center;
+        }
+        .text-sm a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+        .text-sm a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create your account</h1>
+        <form id="signup-form">
+            <div class="form-group">
+                <label for="name">Your name</label>
+                <input style="width: 360px;" type="text" name="name" id="name" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Your email</label>
+                <input style="width: 360px;" type="email" name="email" id="email" placeholder="name@company.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input style="width: 360px;" type="password" name="password" id="password" placeholder="••••••••" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm password</label>
+                <input style="width: 360px;" type="password" name="confirm-password" id="confirm-password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn">Sign up</button>
+            <p class="text-sm">
+                Already have an account? <a href="login.html">Login</a>
+            </p>
+        </form>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDohxxobIvvkI1P_f0BDrrwYtPfs8CbvWo",
+            authDomain: "login-and-signup-34870.firebaseapp.com",
+            projectId: "login-and-signup-34870",
+            storageBucket: "login-and-signup-34870.appspot.com",
+            messagingSenderId: "464772777824",
+            appId: "1:464772777824:web:46a867bb9cbd14da570005",
+            measurementId: "G-2J14M7JZE0"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth();
+        const database = getDatabase();
+
+        // Register function
+        function register() {
+            const email = document.getElementById('email').value;
+            const name = document.getElementById('name').value;
+            const password = document.getElementById('password').value;
+            const confirmPass = document.getElementById('confirm-password').value;
+
+            if (!validateFields(email) || !validateFields(name) || !validateFields(password) || !validateFields(confirmPass)) {
+                alert("All fields must be filled out");
+                return;
+            }
+
+            if (password !== confirmPass) {
+                alert("Passwords do not match");
+                return;
+            }
+
+            if (!validateEmail(email) || !validatePassword(password)) {
+                alert("Check Email and Password");
+                return;
+            }
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    const user = auth.currentUser;
+                    alert("User Created");
+
+                    const database_ref = ref(database, 'users/' + user.uid);
+
+                    const user_data = {
+                        email: email,
+                        name: name,
+                        last_login: Date.now()
+                    };
+
+                    set(database_ref, user_data);
+                })
+                .catch((error) => {
+                    const error_code = error.code;
+                    const error_msg = error.message;
+                    alert(`Error: ${error_msg}`);
+                });
+        }
+
+        function validateEmail(email) {
+            const expression = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return expression.test(email);
+        }
+
+        function validatePassword(password) {
+            return password.length >= 6;
+        }
+
+        function validateFields(field) {
+            return field != null && field.length > 0;
+        }
+
+        // Attach the register function to form submit
+        document.getElementById('signup-form').addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent default form submission
+            register(); // Call the register function
+        });
+
+        function login(){
+            const email = document.getElementById('email').value;
+            const name = document.getElementById('name').value;
+        }
+    </script>
+</body>
+</html>

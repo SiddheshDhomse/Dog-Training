@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Sign In</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDohxxobIvvkI1P_f0BDrrwYtPfs8CbvWo",
+    authDomain: "login-and-signup-34870.firebaseapp.com",
+    projectId: "login-and-signup-34870",
+    storageBucket: "login-and-signup-34870.appspot.com",
+    messagingSenderId: "464772777824",
+    appId: "1:464772777824:web:46a867bb9cbd14da570005",
+    measurementId: "G-2J14M7JZE0"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Signed in
+                    const user = userCredential.user;
+                    alert('Sign in successful');
+                    // Redirect to index.html
+                    window.location.href = 'index.html';
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    alert(`Error: ${errorMessage}`);
+                });
+        }
+
+        // Attach the login function to form submit
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('form').addEventListener('submit', (event) => {
+                event.preventDefault(); // Prevent default form submission
+                login(); // Call the login function
+            });
+        });
+    </script>
+</head>
+<body>
+    <section class="container">
+        <div class="form-container">
+            <h1>Sign in to your account</h1>
+            <form>
+                <div class="input-group">
+                    <label for="email">Your email</label>
+                    <input type="email" name="email" id="email" placeholder="name@company.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" placeholder="••••••••" required>
+                </div>
+                <div class="options">
+                    <div class="remember-me">
+                        <input id="remember" type="checkbox">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+                <button type="submit">Sign in</button>
+                <p class="signup-link">Don’t have an account yet? <a href="signup.html">Sign up</a></p>
+            </form>
+        </div>
+    </section>
+</body>
+</html>
