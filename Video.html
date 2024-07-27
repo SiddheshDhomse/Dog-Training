@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube-like Video Interface</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-storage-compat.js"></script>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 flex flex-col items-center min-h-screen">
+        <!-- Thumbnails Section -->
+        <div id="thumbnails-section" class="bg-white py-6 sm:py-8 lg:py-12">
+            <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
+                <div class="mb-10 md:mb-16">
+                    <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-6 lg:text-3xl">Select a Video</h2>
+                    <p class="mx-auto max-w-screen-md text-center text-gray-500 md:text-lg">Choose a video from the list below to play.</p>
+                </div>
+                <div class="grid gap-x-4 gap-y-8 sm:grid-cols-2 md:gap-x-6 lg:grid-cols-3 xl:grid-cols-4">
+                    <!-- Video thumbnail start -->
+                    <div>
+                        <a href="#" class="group relative mb-2 block h-96 overflow-hidden rounded-lg bg-gray-100 shadow-lg lg:mb-3" onclick="showVideoPage('/Videos/Video1.mp4', 'Video 1 Title', 'Description for Video 1'); return false;">
+                            <img src="images/thumbnail1.jpg" loading="lazy" alt="Video Thumbnail" class="h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
+                        </a>
+                        <div class="flex items-start justify-between gap-2 px-2">
+                            <div class="flex flex-col">
+                                <a href="#" class="text-lg font-bold text-gray-800 transition duration-100 hover:text-gray-500 lg:text-xl">Video 1</a>
+                                <span class="text-gray-500">Description for Video 1</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Video thumbnail end -->
+    
+                    <!-- Video thumbnail start -->
+                    <div>
+                        <a href="#" class="group relative mb-2 block h-96 overflow-hidden rounded-lg bg-gray-100 shadow-lg lg:mb-3" onclick="showVideoPage('/Videos/Video2.mp4', 'Video 2 Title', 'Description for Video 2'); return false;">
+                            <img src="images/thumbnail2.jpg" loading="lazy" alt="Video Thumbnail" class="h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
+                        </a>
+                        <div class="flex items-start justify-between gap-2 px-2">
+                            <div class="flex flex-col">
+                                <a href="#" class="text-lg font-bold text-gray-800 transition duration-100 hover:text-gray-500 lg:text-xl">Video 2</a>
+                                <span class="text-gray-500">Description for Video 2</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Video thumbnail end -->
+    
+                    <!-- Video thumbnail start -->
+                    <div>
+                        <a href="#" class="group relative mb-2 block h-96 overflow-hidden rounded-lg bg-gray-100 shadow-lg lg:mb-3" onclick="showVideoPage('/Videos/Video3.mp4', 'Video 3 Title', 'Description for Video 3'); return false;">
+                            <img src="images/thumbnail3.jpg" loading="lazy" alt="Video Thumbnail" class="h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
+                        </a>
+                        <div class="flex items-start justify-between gap-2 px-2">
+                            <div class="flex flex-col">
+                                <a href="#" class="text-lg font-bold text-gray-800 transition duration-100 hover:text-gray-500 lg:text-xl">Video 3</a>
+                                <span class="text-gray-500">Description for Video 3</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Video thumbnail end -->
+    
+                    <!-- Video thumbnail start -->
+                    <div>
+                        <a href="#" class="group relative mb-2 block h-96 overflow-hidden rounded-lg bg-gray-100 shadow-lg lg:mb-3" onclick="showVideoPage('/Videos/Video4.mp4', 'Video 4 Title', 'Description for Video 4'); return false;">
+                            <img src="images/thumbnail4.jpg" loading="lazy" alt="Video Thumbnail" class="h-full w-full object-cover object-center transition duration-200 group-hover:scale-110" />
+                        </a>
+                        <div class="flex items-start justify-between gap-2 px-2">
+                            <div class="flex flex-col">
+                                <a href="#" class="text-lg font-bold text-gray-800 transition duration-100 hover:text-gray-500 lg:text-xl">Video 4</a>
+                                <span class="text-gray-500">Description for Video 4</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Video thumbnail end -->
+                </div>
+            </div>
+        </div>
+    
+        <!-- Video Page Section -->
+        <div id="video-page" class="hidden bg-white w-full md:w-3/4 lg:w-3/5 p-6 rounded-lg shadow-lg my-8">
+            <div class="aspect-w-16 aspect-h-9 mb-4">
+                <video id="video" controls class="w-full h-full rounded-lg shadow-md"></video>
+            </div>
+            <h1 id="video-title" class="text-2xl font-bold mb-2">Intro Video Title</h1>
+            <p id="video-description" class="text-gray-700 mb-4">This is a sample description for the video. It gives an overview of the content and purpose of the video.</p>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <button class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg mr-2">
+                        <i class="fas fa-thumbs-up mr-2"></i> 
+                    </button>
+                    <button class="flex items-center bg-red-500 text-white px-4 py-2 rounded-lg mr-2">
+                        <i class="fas fa-thumbs-down mr-2"></i> 
+                    </button>
+                </div>
+                <div>
+                    <button class="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-share mr-2"></i> 
+                    </button>
+                </div>
+            </div>
+            <button id="back-button" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg">Back to Thumbnails</button>
+        </div>
+    
+
+    <!-- JavaScript -->
+    <script src="video.js"></script>
+</body>
+</html>
