@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Udemy-like Video Interface</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-storage-compat.js"></script>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 flex min-h-screen">
+
+    <!-- Sidebar Section -->
+    <aside class="w-1/4 bg-white p-6 shadow-lg">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Select a Video</h2>
+        <p class="text-gray-500 mb-4">Choose a video from the list below to play.</p>
+        <div class="space-y-4">
+            <div id="video1" class="video-item flex items-start p-4 bg-gray-100 rounded-lg hover:bg-gray-200" onclick="unlockVideo(1, '/Videos/Video1.mp4', 'Video 1 Title', 'Description for Video 1'); return false;">
+                <img src="images/thumbnail1.jpg" alt="Video 1 Thumbnail" class="w-20 h-12 object-cover rounded-lg mr-4">
+                <div>
+                    <h3 class="font-bold text-gray-800">Video 1</h3>
+                    <span class="text-gray-500">Description for Video 1</span>
+                </div>
+            </div>
+            <div id="video2" class="video-item flex items-start p-4 bg-gray-100 rounded-lg hover:bg-gray-200 opacity-50 cursor-not-allowed" onclick="unlockVideo(2, '/Videos/Video2.mp4', 'Video 2 Title', 'Description for Video 2'); return false;">
+                <img src="images/thumbnail2.jpg" alt="Video 2 Thumbnail" class="w-20 h-12 object-cover rounded-lg mr-4">
+                <div>
+                    <h3 class="font-bold text-gray-800">Video 2</h3>
+                    <span class="text-gray-500">Description for Video 2</span>
+                </div>
+            </div>
+            <div id="video3" class="video-item flex items-start p-4 bg-gray-100 rounded-lg hover:bg-gray-200 opacity-50 cursor-not-allowed" onclick="unlockVideo(3, '/Videos/Video3.mp4', 'Video 3 Title', 'Description for Video 3'); return false;">
+                <img src="images/thumbnail3.jpg" alt="Video 3 Thumbnail" class="w-20 h-12 object-cover rounded-lg mr-4">
+                <div>
+                    <h3 class="font-bold text-gray-800">Video 3</h3>
+                    <span class="text-gray-500">Description for Video 3</span>
+                </div>
+            </div>
+            <div id="video4" class="video-item flex items-start p-4 bg-gray-100 rounded-lg hover:bg-gray-200 opacity-50 cursor-not-allowed" onclick="unlockVideo(4, '/Videos/Video4.mp4', 'Video 4 Title', 'Description for Video 4'); return false;">
+                <img src="images/thumbnail4.jpg" alt="Video 4 Thumbnail" class="w-20 h-12 object-cover rounded-lg mr-4">
+                <div>
+                    <h3 class="font-bold text-gray-800">Video 4</h3>
+                    <span class="text-gray-500">Description for Video 4</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Section -->
+    <main class="flex-1 p-6">
+        <div id="video-page" class="bg-white rounded-lg shadow-lg p-6 hidden">
+            <div class="aspect-w-16 aspect-h-9 mb-4">
+                <video id="video" controls class="w-full h-full rounded-lg shadow-md"></video>
+            </div>
+            <h1 id="video-title" class="text-2xl font-bold mb-2">Intro Video Title</h1>
+            <p id="video-description" class="text-gray-700 mb-4">This is a sample description for the video. It gives an overview of the content and purpose of the video.</p>
+            <button id="back-button" class="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg" onclick="hideVideoPage()">Back to Thumbnails</button>
+    </div>
+        
+    </main>
+    
+
+    <!-- JavaScript -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDohxxobIvvkI1P_f0BDrrwYtPfs8CbvWo",
+            authDomain: "login-and-signup-34870.firebaseapp.com",
+            projectId: "login-and-signup-34870",
+            storageBucket: "login-and-signup-34870.appspot.com",
+            messagingSenderId: "464772777824",
+            appId: "1:464772777824:web:46a867bb9cbd14da570005",
+            measurementId: "G-2J14M7JZE0"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Initialize Firebase Storage
+        const storage = firebase.storage();
+        const storageRef = storage.ref();
+
+        let currentVideoIndex = 0; // Track the currently watched video index
+
+        function unlockVideo(index, path, title, description) {
+            if (index === currentVideoIndex + 1) { // Check if the video can be unlocked
+                currentVideoIndex = index; // Update the current video index
+                const videoRef = storageRef.child(path);
+                videoRef.getDownloadURL().then((url) => {
+                    document.getElementById('video-page').classList.remove('hidden');
+                    const videoElement = document.getElementById('video');
+                    videoElement.src = url;
+                    videoElement.play();
+                    document.getElementById('video-title').textContent = title;
+                    document.getElementById('video-description').textContent = description;
+
+                    // Unlock the next video if it exists
+                    if (index < 4) {
+                        document.getElementById(`video${index + 1}`).classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
+                }).catch((error) => {
+                    console.error('Error fetching video URL:', error);
+                });
+            }
+        }
+
+        function hideVideoPage() {
+            document.getElementById('video-page').classList.add('hidden');
+            const videoElement = document.getElementById('video');
+            videoElement.pause();
+            videoElement.src = ''; 
+        }
+    </script>
+</body>
+</html>
